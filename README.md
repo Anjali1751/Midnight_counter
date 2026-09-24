@@ -75,17 +75,3 @@ _Fill this in manually._
 ## Screenshots
 
 _Add compile output and deployed address screenshots here._
-
-## Level 1 Checklist
-
-- [x] Contract compiles with `compact compile`
-- [x] `managed/` directory generated with circuits and keys
-- [x] Three tests covering contract logic, state transitions, and privacy
-- [ ] Contract deployed to Preview or Preprod
-- [ ] Deployed contract address added above
-- [x] README contains all required sections
-- [x] File structure matches the challenge specification
-
-Deployment and faucet funding remain manual steps. Before submitting, fill in
-the Initial Idea section, add screenshots, make at least five meaningful
-commits, and submit the public GitHub repository on Rise In.
