@@ -38,7 +38,7 @@ not the secret key.
 ## Prerequisites
 
 - Node.js v22 and npm
-- Compact CLI with compiler `0.29.0` selected
+- Compact CLI with compiler `0.31.1` selected
 - Docker running locally
 - Access to the Midnight Preview or Preprod network for deployment
 - A funded Preview wallet for deployment
@@ -49,7 +49,7 @@ not the secret key.
 git clone <repository-url>
 cd Midnight_counter
 nvm use 22
-compact update 0.29.0
+compact update 0.31.1
 npm install
 ```
 
