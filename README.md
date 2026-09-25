@@ -101,4 +101,6 @@ A privacy-preserving counter where ownership is proven with a private secret key
 
 ## Screenshots
 
-_Add compile output and deployed address screenshots here._
+![Compile output](docs/screenshots/compile.png)
+
+> Save the actual screenshot as `compile.png` in the `docs/screenshots` folder before pushing.
