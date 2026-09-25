@@ -5,7 +5,7 @@
   "type": "module",
   "description": "A private-owner counter written in Compact.",
   "scripts": {
-    "compile": "compact compile contracts/counter.compact managed",
+    "compile": "compact contracts/counter.compact managed",
     "test": "node --test tests/counter.test.ts"
   },
   "engines": {

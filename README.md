@@ -6,7 +6,7 @@
 
 | Network | Address |
 | --- | --- |
-| Preview | _Not deployed yet_ |
+| Preview | `6a9f45c19b671944eff8cbe3a0f2d3c02511d1b01fbabaff6476682d9d2930c8` |
 | Preprod | _Not deployed yet_ |
 
 ## What This Does
@@ -38,7 +38,7 @@ not the secret key.
 ## Prerequisites
 
 - Node.js v22 and npm
-- Compact CLI with compiler `0.31.1` selected
+- Compact CLI/compiler `0.31.1`
 - Docker running locally
 - Access to the Midnight Preview or Preprod network for deployment
 - A funded Preview wallet for deployment
@@ -49,9 +49,31 @@ not the secret key.
 git clone <repository-url>
 cd Midnight_counter
 nvm use 22
-compact update 0.31.1
 npm install
 ```
+
+Install the compatible Linux compiler release:
+
+```sh
+mkdir -p "$HOME/.local/bin"
+curl -fL https://github.com/LFDT-Minokawa/compact/releases/download/compactc-v0.31.1/compactc_v0.31.1_x86_64-unknown-linux-musl.zip -o /tmp/compactc.zip
+unzip -o /tmp/compactc.zip -d /tmp/compactc-install
+cp /tmp/compactc-install/* "$HOME/.local/bin/"
+chmod +x "$HOME/.local/bin"/*
+ln -sf "$HOME/.local/bin/compactc" "$HOME/.local/bin/compact"
+export PATH="$HOME/.local/bin:$PATH"
+```
+
+Verify the toolchain before compiling:
+
+```sh
+node --version
+compact --version
+```
+
+The challenge prompt's `npm install -g @midnight-ntwrk/compact-compiler`
+command currently returns `404` from npm. The project script uses the direct
+compiler syntax required by Compact `0.31.1`.
 
 Compile the contract and generate its managed artifacts:
 
@@ -68,9 +90,14 @@ and proving and verification keys.
 npm test
 ```
 
+The tests validate the contract source and the generated compiler metadata,
+including the public ledger entries, circuits, and private witness. A full
+transaction-level test requires the Midnight runtime, proof server, and a
+funded network wallet.
+
 ## Initial Idea
 
-_Fill this in manually._
+A privacy-preserving counter where ownership is proven with a private secret key without revealing the key on-chain.
 
 ## Screenshots
 

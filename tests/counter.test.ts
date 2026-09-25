@@ -3,6 +3,9 @@ import { readFileSync } from "node:fs";
 import { test } from "node:test";
 
 const contract = readFileSync("contracts/counter.compact", "utf8");
+const contractInfo = JSON.parse(
+  readFileSync("managed/compiler/contract-info.json", "utf8"),
+);
 
 test("defines public counter state and owner-only circuits", () => {
   assert.match(contract, /export ledger state: State/);
@@ -10,6 +13,14 @@ test("defines public counter state and owner-only circuits", () => {
   assert.match(contract, /export ledger count: Counter/);
   assert.match(contract, /export circuit claim\(\)/);
   assert.match(contract, /export circuit increment\(\)/);
+  assert.deepEqual(
+    contractInfo.circuits.map((circuit: { name: string }) => circuit.name),
+    ["claim", "increment"],
+  );
+  assert.deepEqual(
+    contractInfo.ledger.map((entry: { name: string }) => entry.name),
+    ["state", "owner", "count"],
+  );
 });
 
 test("models the unclaimed-to-claimed state transition", () => {
@@ -23,4 +34,8 @@ test("keeps the secret witness private while disclosing only its commitment", ()
   assert.match(contract, /witness localSecretKey\(\): Bytes<32>/);
   assert.match(contract, /owner = disclose\(ownerCommitment\(localSecretKey\(\)\)\)/);
   assert.doesNotMatch(contract, /disclose\(localSecretKey\(\)\)/);
+  assert.deepEqual(
+    contractInfo.witnesses.map((witness: { name: string }) => witness.name),
+    ["localSecretKey"],
+  );
 });
