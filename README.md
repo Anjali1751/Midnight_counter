@@ -1,6 +1,6 @@
 # Private-Owner Counter
 
-> A Midnight Compact counter that only its private owner can increment.
+> A privacy-preserving Midnight Compact counter where ownership is proven with a private secret key without revealing the key on-chain.
 
 ## Contract Address
 
@@ -11,22 +11,17 @@
 
 ## What This Does
 
-The contract starts unclaimed. An owner claims it by proving knowledge of a
-secret key. The contract stores only a hash commitment to that key. After the
-counter is claimed, the owner can increment the public count, while callers
-without the matching secret key are rejected.
+This contract starts in an unclaimed state. A user can claim ownership by proving they know a secret key without exposing that secret on-chain. Once claimed, the owner may increment the public counter while callers without the matching secret key are rejected.
+
+The contract stores a public hash commitment for ownership and a public count value, while the secret itself remains private and is never revealed to the ledger.
 
 ## Privacy Model
 
-- **PUBLIC (on-chain, visible to anyone):** `state`, the `owner` hash
-	commitment, and `count`.
-- **PRIVATE (never on-chain):** the secret key returned by the
-	`localSecretKey()` witness.
-- **PROVED without revealing:** the caller knows the secret key behind the
-	public owner commitment.
+- **PUBLIC (on-chain, visible to anyone):** the contract `state`, the public `owner` hash commitment, and the public `count` value.
+- **PRIVATE (never on-chain):** the secret key returned by the `localSecretKey()` witness.
+- **PROVED without revealing:** the caller demonstrates knowledge of the secret behind the public owner commitment.
 
-The commitment is disclosed once during `claim()`. This discloses the hash,
-not the secret key.
+The hash commitment is disclosed during `claim()`, but the underlying secret remains hidden.
 
 ## Tech Stack
 
@@ -40,7 +35,7 @@ not the secret key.
 - Node.js v22 and npm
 - Compact CLI/compiler `0.31.1`
 - Docker running locally
-- Access to the Midnight Preview or Preprod network for deployment
+- Access to the Midnight Preview or Preprod network
 - A funded Preview wallet for deployment
 
 ## Setup
@@ -72,10 +67,10 @@ compact --version
 ```
 
 The challenge prompt's `npm install -g @midnight-ntwrk/compact-compiler`
-command currently returns `404` from npm. The project script uses the direct
-compiler syntax required by Compact `0.31.1`.
+command currently returns `404` from npm. This project uses the direct compiler
+installation and script flow required by Compact `0.31.1`.
 
-Compile the contract and generate its managed artifacts:
+Compile the contract and generate the managed artifacts:
 
 ```sh
 npm run compile
@@ -90,10 +85,7 @@ and proving and verification keys.
 npm test
 ```
 
-The tests validate the contract source and the generated compiler metadata,
-including the public ledger entries, circuits, and private witness. A full
-transaction-level test requires the Midnight runtime, proof server, and a
-funded network wallet.
+The test suite validates the contract logic, generated compiler metadata, public ledger transitions, and the private witness model. A full transaction-level test requires the Midnight runtime, proof server, and a funded wallet.
 
 ## Initial Idea
 
@@ -101,6 +93,12 @@ A privacy-preserving counter where ownership is proven with a private secret key
 
 ## Screenshots
 
+### Compile output
+
 ![Compile output](docs/screenshots/compile.png)
 
-> Save the actual screenshot as `compile.png` in the `docs/screenshots` folder before pushing.
+### Deployment screenshot
+
+![Deployment screenshot](docs/screenshots/deploy.png)
+
+> Save the compile screenshot as `compile.png` and the deployment screenshot as `deploy.png` in the `docs/screenshots` folder before pushing.
