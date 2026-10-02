@@ -7,7 +7,11 @@
 | Network | Address |
 | --- | --- |
 | Preview | `6a9f45c19b671944eff8cbe3a0f2d3c02511d1b01fbabaff6476682d9d2930c8` |
-| Preprod | _Not deployed yet_ |
+| Preprod | `6a9f45c19b671944eff8cbe3a0f2d3c02511d1b01fbabaff6476682d9d2930c8` |
+
+## Live Demo
+
+https://midnightcounter.vercel.app
 
 ## What This Does
 
@@ -23,31 +27,59 @@ The contract stores a public hash commitment for ownership and a public count va
 
 The hash commitment is disclosed during `claim()`, but the underlying secret remains hidden.
 
+## Privacy Claim
+
+An on-chain observer can see the counter state, the owner hash commitment, and each successful increment. They cannot see the owner's secret key; `increment()` proves knowledge of the key matching the commitment without revealing the key.
+
 ## Tech Stack
 
 - Midnight Network
 - Compact language
+- Midnight.js SDK and DApp Connector API
+- React and Vite
+- Lace wallet
 - Node.js v22
 - Docker
 
 ## Prerequisites
 
 - Node.js v22 and npm
+- Lace wallet installed and configured for Preprod
 - Compact CLI/compiler `0.31.1`
 - Docker running locally
 - Access to the Midnight Preview or Preprod network
-- A funded Preview wallet for deployment
+- A funded Preprod wallet for deployment
 
-## Setup
+## Run Locally
 
 ```sh
 git clone <repository-url>
 cd Midnight_counter
 nvm use 22
-npm install
+npm ci
+cp .env.example .env
+npm run dev
 ```
 
-Install the compatible Linux compiler release:
+The app uses Lace's DApp Connector to request a Preprod connection, show the wallet address, and clear the local connection state on disconnect. It reports missing Lace, a declined connection, and a network mismatch.
+
+`VITE_CONTRACT_ADDRESS` is reserved for the deployed Preprod contract. The current frontend does not yet read the on-chain count, generate a proof, or submit a transaction. The increment button remains disabled because the generated contract runtime and transaction providers are not wired up; setting the address alone will not enable it.
+
+## Deploy Frontend
+
+After deploying the Compact contract to Preprod, configure Vercel and deploy:
+
+```sh
+npx vercel login
+npx vercel link
+npx vercel env add VITE_CONTRACT_ADDRESS production
+npx vercel env add VITE_MIDNIGHT_NETWORK_ID production
+npx vercel --prod
+```
+
+Enter the deployed Preprod contract address when prompted for `VITE_CONTRACT_ADDRESS`, and `preprod` for `VITE_MIDNIGHT_NETWORK_ID`. Add the production URL to the Live Demo section above.
+
+## Compile Contract
 
 ```sh
 mkdir -p "$HOME/.local/bin"
@@ -79,6 +111,15 @@ npm run compile
 The generated `managed/` directory contains the contract interface, circuits,
 and proving and verification keys.
 
+## Demo Video
+
+Placeholder: add the recording link after filming. Record the requested circuit flow only after proof generation and transaction submission are integrated; those actions are not available in the current frontend.
+
+1. Connect Lace and show the wallet address.
+2. Call the circuit and show proof-generation loading.
+3. Show the on-chain result after submission.
+4. Point out that the private input is never displayed.
+
 ## Run Tests
 
 ```sh
@@ -86,10 +127,6 @@ npm test
 ```
 
 The test suite validates the contract logic, generated compiler metadata, public ledger transitions, and the private witness model. A full transaction-level test requires the Midnight runtime, proof server, and a funded wallet.
-
-## Initial Idea
-
-A privacy-preserving counter where ownership is proven with a private secret key without revealing the key on-chain.
 
 ## Screenshots
 
